@@ -2,6 +2,22 @@
 
 extern ssize_t ft_write(int fd, const void *buf, size_t count);
 
+static char *get_writable_buf(const void *buf, size_t count)
+{
+    char *dst = NULL;
+
+    if (buf != NULL)
+    {
+        dst = malloc(count + 1);
+        if (count <= 0)
+            dst[0] = '\0';
+        else if (dst != NULL)
+            strncpy(dst, buf, count);
+    }
+
+    return dst == NULL ? strdup("null") : dst;
+}
+
 static t_bool write_is_valid(int fd, const void *buf, size_t count,
     const ssize_t res, const ssize_t ft_res,
     const int res_errno, const int ft_res_errno)
@@ -11,24 +27,16 @@ static t_bool write_is_valid(int fd, const void *buf, size_t count,
 
     if (res != ft_res)
     {
-        if (buf != NULL)
-        {
-            std_buffer = malloc(count + 1);
-            if (std_buffer != NULL) strncpy(std_buffer, buf, count);
-        }
-        printf(RED "[WRITE] Return value mismatch on fd=%d (%s): %ld != %ld" RESET "\n", fd, std_buffer, res, ft_res);
+        std_buffer = get_writable_buf(buf, count);
+        printf(RED "[WRITE] Return value mismatch on fd=%d with count=%zu (%s): %ld != %ld" RESET "\n", fd, count, std_buffer, res, ft_res);
         free(std_buffer);
         return FALSE;
     }
 
     if (res < 0 && res_errno != ft_res_errno)
     {
-        if (buf != NULL)
-        {
-            std_buffer = malloc(count + 1);
-            if (std_buffer != NULL) strncpy(std_buffer, buf, count);
-        }
-        printf(RED "[WRITE] Errno value mismatch on fd=%d (%s): %d != %d" RESET "\n", fd, std_buffer, res_errno, ft_res_errno);
+        std_buffer = get_writable_buf(buf, count);
+        printf(RED "[WRITE] Errno value mismatch on fd=%d with count=%zu (%s): %d != %d" RESET "\n", fd, count, std_buffer, res_errno, ft_res_errno);
         free(std_buffer);
         return FALSE;
     }
@@ -38,27 +46,45 @@ static t_bool write_is_valid(int fd, const void *buf, size_t count,
 
     if (!std_buffer || !ft_buffer)
     {
-        printf(RED "[WRITE] MALLOC ERROR on fd=%d with count=%zu" RESET "\n", fd, count);
         free(std_buffer);
         free(ft_buffer);
+        printf(RED "[WRITE] MALLOC ERROR on fd=%d with count=%zu" RESET "\n", fd, count);
         return FALSE;
     }
 
+    lseek(fd, -count * 2, SEEK_CUR);
     ssize_t std_read_res = read(fd, std_buffer, count);
     ssize_t ft_read_res = read(fd, ft_buffer, count);
 
-    if (std_read_res != ft_read_res)
+    if (std_read_res < 0 || ft_read_res < 0)
     {
-        printf(RED "[WRITE] Read size mismatch on fd=%d with count=%zu : %ld != %ld" RESET "\n", fd, count, std_read_res, ft_read_res);
         free(std_buffer);
         free(ft_buffer);
+        std_buffer = get_writable_buf(buf, count);
+        printf(RED "[WRITE] READ ERROR on fd=%d with count=%zu (%s): std=%ld, ft=%ld, errno=%d (%s)" RESET "\n", fd, count, std_buffer, std_read_res, ft_read_res, errno, strerror(errno));
+        free(std_buffer);
         return FALSE;
     }
 
-    std_buffer[count] = '\0';
-    ft_buffer[count] = '\0';
+    if (std_read_res != ft_read_res)
+    {
+        free(std_buffer);
+        free(ft_buffer);
+        std_buffer = get_writable_buf(buf, count);
+        printf(RED "[WRITE] Read size mismatch on fd=%d with count=%zu (%s): %ld != %ld" RESET "\n", fd, count, std_buffer, std_read_res, ft_read_res);
+        free(std_buffer);
+        return FALSE;
+    }
+
+    std_buffer[std_read_res] = '\0';
+    ft_buffer[ft_read_res] = '\0';
 
     t_bool result = strcmp(std_buffer, ft_buffer) == 0;
+
+    if (!result)
+    {
+        printf(RED "[WRITE] Buffer mismatch on fd=%d with count=%zu: (%s) != (%s)" RESET "\n", fd, count, std_buffer, ft_buffer);
+    }
 
     free(std_buffer);
     free(ft_buffer);
@@ -115,11 +141,11 @@ void write_tester(void)
     printf("\n" PURPLE " ***** WRITE *****" RESET "\n\n");
 
     // Creating test files
-    int fd3 = open(TMP_DIR "/test1", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    int fd4 = open(TMP_DIR "/test2", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    int fd5 = open(TMP_DIR "/test3", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    int fd6 = open(TMP_DIR "/test4", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    int fd7 = open(TMP_DIR "/test5", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    int fd3 = open(TMP_DIR "/test1", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    int fd4 = open(TMP_DIR "/test2", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    int fd5 = open(TMP_DIR "/test3", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    int fd6 = open(TMP_DIR "/test4", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    int fd7 = open(TMP_DIR "/test5", O_RDWR | O_CREAT | O_TRUNC, 0644);
 
     if (fd3 < 0 || fd4 < 0 || fd5 < 0 || fd6 < 0 || fd7 < 0) 
     {
@@ -136,7 +162,7 @@ void write_tester(void)
     write_test(fd3, "First write.", 12);
     write_test(fd3, "Second write!", 13);
     write_test(fd3, "Final write.", 12);
-    write_test(fd4, B_1_000"AA__", 1002);
+    write_test(fd4, B_1_000"AA_-", 1003);
     write_test(fd4, A_10_000"B"A_10_000, 15000);
 
     write_test(fd4, "Unicode test: 日本語, русский, عربى", 30);
@@ -157,15 +183,20 @@ void write_tester(void)
     close(fd6);
     close(fd7);
 
-    int fd8 = open(TMP_DIR "/benchmark1", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    fd3 = open(TMP_DIR "/benchmark1", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    fd4 = open(TMP_DIR "/benchmark2", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    fd5 = open(TMP_DIR "/benchmark3", O_RDWR | O_CREAT | O_TRUNC, 0644);
 
-    if (fd8 < 0) 
+    if (fd3 < 0 | fd4 < 0 | fd5 < 0) 
     {
         printf(RED "[WRITE] ERROR Failed to open benchmark files!" RESET "\n");
         return;
     }
 
-    write_benchmark(fd8, "Hello World!", 12);
+    write_benchmark(fd3, "", 0);
+    write_benchmark(fd3, "", 1);
+    write_benchmark(fd4, "Hello World!", 12);
+    write_benchmark(fd5, A_1_000".\n", 1002);
 
-    close(fd8);
+    close(fd3);
 }
