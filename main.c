@@ -3,6 +3,7 @@
 void strlen_tester(void);
 void strcpy_tester(void);
 void strcmp_tester(void);
+void write_tester(void);
 
 static t_bool argv_contains(char **argv, int argc, const char *value)
 {
@@ -28,6 +29,9 @@ int main(int argc, char **argv)
 
     if (argc <= 1 || argv_contains(argv, argc, "strcmp"))
         strcmp_tester();
+
+    if (argc <= 1 || argv_contains(argv, argc, "write"))
+        write_tester();
 
     if (argc <= 1)
         printf("\n" BLUE " ***** All Test Ended *****" RESET "\n");

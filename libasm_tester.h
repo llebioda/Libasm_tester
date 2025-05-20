@@ -1,11 +1,17 @@
 #pragma once
 
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #define BENCHMARK_ITERATIONS 100000 // Number of times to run each function for benchmark
+#ifndef TMP_DIR
+# define TMP_DIR "tmp"
+#endif
 
 #define RESET  "\033[0m"
 #define BLACK  "\033[0;30m"
