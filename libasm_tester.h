@@ -47,3 +47,4 @@ typedef struct s_list
 
 const char *get_printable_str(const char *s);
 void calculate_efficiency(const char *function_name, double time_lib, double time_ft);
+void free_list(t_list **list);

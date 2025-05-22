@@ -8,6 +8,7 @@ extern int ft_atoi_base(char *str, char *base);
 
 void atoi_base_tester(void)
 {
+    printf("\n" PURPLE " ***** ATOI BASE *****" RESET "\n\n");
 }
 
 #endif

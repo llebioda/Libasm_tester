@@ -7,7 +7,11 @@ void write_tester(void);
 void read_tester(void);
 void strdup_tester(void);
 
+void atoi_base_tester(void);
+void list_push_front_tester(void);
 void list_size_tester(void);
+void list_sort_tester(void);
+void list_remove_if_tester(void);
 
 char *A_1_000_000_000 = NULL;
 
@@ -64,8 +68,20 @@ int main(int argc, char **argv)
     if (argc <= 1 || argv_contains(argv, argc, "strdup"))
         strdup_tester();
 
+    if (argc <= 1 || argv_contains(argv, argc, "atoi_base"))
+        atoi_base_tester();
+
+    if (argc <= 1 || argv_contains(argv, argc, "list_push_front"))
+        list_push_front_tester();
+
     if (argc <= 1 || argv_contains(argv, argc, "list_size"))
         list_size_tester();
+
+    if (argc <= 1 || argv_contains(argv, argc, "list_sort"))
+        list_sort_tester();
+
+    if (argc <= 1 || argv_contains(argv, argc, "list_remove_if"))
+        list_remove_if_tester();
 
     if (argc <= 1)
         printf("\n" BLUE " ***** All Test Ended *****" RESET "\n");
