@@ -39,5 +39,11 @@ extern char *A_1_000_000_000;
 
 typedef int t_bool;
 
+typedef struct s_list
+{
+    void *data;
+    struct s_list *next;
+} t_list;
+
 const char *get_printable_str(const char *s);
 void calculate_efficiency(const char *function_name, double time_lib, double time_ft);

@@ -7,6 +7,8 @@ void write_tester(void);
 void read_tester(void);
 void strdup_tester(void);
 
+void list_size_tester(void);
+
 char *A_1_000_000_000 = NULL;
 
 void generate_long_string()
@@ -61,6 +63,9 @@ int main(int argc, char **argv)
 
     if (argc <= 1 || argv_contains(argv, argc, "strdup"))
         strdup_tester();
+
+    if (argc <= 1 || argv_contains(argv, argc, "list_size"))
+        list_size_tester();
 
     if (argc <= 1)
         printf("\n" BLUE " ***** All Test Ended *****" RESET "\n");

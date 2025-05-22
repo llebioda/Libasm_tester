@@ -3,31 +3,37 @@ TMP_DIR = tmp
 LIBASM_DIR = ../
 LIBASM = $(LIBASM_DIR)libasm.a
 
-TARGETS_ARGS :=	strlen \
-				strcpy \
-				strcmp \
-				write \
-				read \
-				strdup \
-				atoi_base \
-				list_push_front \
-				list_size \
-				list_sort \
-				list_remove_if
+BONUS_TARGETS_ARGS := \
+	atoi_base \
+	list_push_front \
+	list_size \
+	list_sort \
+	list_remove_if
+
+TARGETS_ARGS := $(BONUS_TARGETS_ARGS) \
+	strlen \
+	strcpy \
+	strcmp \
+	write \
+	read \
+	strdup
 
 ARGS := $(filter $(TARGETS_ARGS), $(MAKECMDGOALS))
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -D $(TMP_DIR)
+CFLAGS = -Wall -Wextra -Werror -g -D TMP_DIR='"$(TMP_DIR)"'
 
-SRCS =	main.c utils.c \
-		strlen_test.c \
-		strcpy_test.c \
-		strcmp_test.c \
-		write_test.c \
-		read_test.c \
-		strdup_test.c
-#$(addsuffix _test.c, $(TARGETS_ARGS))
+# Iterate over each target and check if the corresponding file exists
+# If it doesnt exist add a DEFINE to disable that part to avoid error during compilation
+define CHECK_FILE
+ifneq ($(wildcard $(LIBASM_DIR)ft_$(1)_bonus.s), $(LIBASM_DIR)ft_$(1)_bonus.s)
+    CFLAGS += -D disable_$(1)
+endif
+endef
+
+$(foreach target, $(BONUS_TARGETS_ARGS), $(eval $(call CHECK_FILE,$(target))))
+
+SRCS = main.c utils.c $(addsuffix _test.c, $(TARGETS_ARGS))
 
 OBJDIR = ./build/
 OBJS = $(addprefix $(OBJDIR), $(notdir $(SRCS:.c=.o)))
@@ -59,7 +65,7 @@ $(TMP_DIR):
 	@mkdir -p $(TMP_DIR)
 
 libasm:
-	@make -C $(LIBASM_DIR) --no-print-directory
+	@make -C $(LIBASM_DIR) bonus --no-print-directory || make -C $(LIBASM_DIR) --no-print-directory
 
 clean:
 	rm -f $(OBJS) $(DEPS)
