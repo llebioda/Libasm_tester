@@ -140,7 +140,7 @@ static void write_test(int fd, const void *buf, size_t count, const int errno_va
 static void write_benchmark(int fd, const void *buf, size_t count, const int errno_value)
 {
     clock_t start, end;
-    double time_lib = 0.0, time_ft = 0.0, efficiency;
+    double time_lib = 0.0, time_ft = 0.0;
 
     for (int i = 0; i < BENCHMARK_ITERATIONS; i++)
     {
@@ -164,12 +164,7 @@ static void write_benchmark(int fd, const void *buf, size_t count, const int err
         }
     }
 
-    efficiency = (time_lib / time_ft) * 100;
-
-    const char *eff_color = (efficiency > 97.5) ? GREEN : ((efficiency > 60) ? YELLOW : ORANGE);
-
-    printf("%s[BENCHMARK] write:%9.3f ms | ft_write:%9.3f ms | Efficiency: %.2f%%" RESET "\n", 
-           eff_color, time_lib, time_ft, efficiency);
+    calculate_efficiency("write", time_lib, time_ft);
 }
 
 void write_tester(void)

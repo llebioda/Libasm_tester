@@ -58,7 +58,7 @@ static void strdup_test(const char *s)
 static void strdup_benchmark(const char *s)
 {
     clock_t start, end;
-    double time_lib = 0.0, time_ft = 0.0, efficiency;
+    double time_lib = 0.0, time_ft = 0.0;
 
     for (int i = 0; i < BENCHMARK_ITERATIONS; i++)
     {
@@ -84,12 +84,7 @@ static void strdup_benchmark(const char *s)
         free(ft_res);
     }
 
-    efficiency = (time_lib / time_ft) * 100;
-
-    const char *eff_color = (efficiency > 97.5) ? GREEN : ((efficiency > 60) ? YELLOW : ORANGE);
-
-    printf("%s[BENCHMARK] strdup:%9.3f ms | ft_strdup:%9.3f ms | Efficiency: %.2f%%" RESET "\n", 
-           eff_color, time_lib, time_ft, efficiency);
+    calculate_efficiency("strdup", time_lib, time_ft);
 }
 
 void strdup_tester(void)

@@ -68,7 +68,7 @@ static void strcpy_benchmark(const char *src, const size_t buf_size)
     }
 
     clock_t start, end;
-    double time_lib = 0.0, time_ft = 0.0, efficiency;
+    double time_lib = 0.0, time_ft = 0.0;
 
     for (int i = 0; i < BENCHMARK_ITERATIONS; i++)
     {
@@ -95,12 +95,7 @@ static void strcpy_benchmark(const char *src, const size_t buf_size)
     free(buf1);
     free(buf2);
 
-    efficiency = (time_lib / time_ft) * 100;
-
-    const char *eff_color = (efficiency > 97.5) ? GREEN : ((efficiency > 60) ? YELLOW : ORANGE);
-
-    printf("%s[BENCHMARK] strcpy:%9.3f ms | ft_strcpy:%9.3f ms | Efficiency: %.2f%%" RESET "\n", 
-           eff_color, time_lib, time_ft, efficiency);
+    calculate_efficiency("strcpy", time_lib, time_ft);
 }
 
 void strcpy_tester(void)

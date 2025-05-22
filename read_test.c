@@ -107,7 +107,7 @@ static void read_benchmark(int fd, const char *expected, size_t count, const int
     }
 
     clock_t start, end;
-    double time_lib = 0.0, time_ft = 0.0, efficiency;
+    double time_lib = 0.0, time_ft = 0.0;
 
     for (int i = 0; i < BENCHMARK_ITERATIONS; i++)
     {
@@ -138,12 +138,7 @@ static void read_benchmark(int fd, const char *expected, size_t count, const int
     free(std_buffer);
     free(ft_buffer);
 
-    efficiency = (time_lib / time_ft) * 100;
-
-    const char *eff_color = (efficiency > 97.5) ? GREEN : ((efficiency > 60) ? YELLOW : ORANGE);
-
-    printf("%s[BENCHMARK] read:%9.3f ms | ft_read:%9.3f ms | Efficiency: %.2f%%" RESET "\n", 
-           eff_color, time_lib, time_ft, efficiency);
+    calculate_efficiency("read", time_lib, time_ft);
 }
 
 static t_bool write_x2(int fd, const void *buf, size_t count)

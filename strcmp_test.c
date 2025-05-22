@@ -34,7 +34,7 @@ static void strcmp_test(const char *s1, const char *s2)
 static void strcmp_benchmark(const char *s1, const char *s2)
 {
     clock_t start, end;
-    double time_lib = 0.0, time_ft = 0.0, efficiency;
+    double time_lib = 0.0, time_ft = 0.0;
 
     for (int i = 0; i < BENCHMARK_ITERATIONS; i++)
     {
@@ -55,12 +55,7 @@ static void strcmp_benchmark(const char *s1, const char *s2)
         }
     }
 
-    efficiency = (time_lib / time_ft) * 100;
-
-    const char *eff_color = (efficiency > 97.5) ? GREEN : ((efficiency > 60) ? YELLOW : ORANGE);
-
-    printf("%s[BENCHMARK] strcmp:%9.3f ms | ft_strcmp:%9.3f ms | Efficiency: %.2f%%" RESET "\n", 
-           eff_color, time_lib, time_ft, efficiency);
+    calculate_efficiency("strcmp", time_lib, time_ft);
 }
 
 void strcmp_tester(void)

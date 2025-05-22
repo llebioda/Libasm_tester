@@ -38,3 +38,4 @@ extern char *A_1_000_000_000;
 typedef int t_bool;
 
 const char *get_printable_str(const char *s);
+void calculate_efficiency(const char *function_name, double time_lib, double time_ft);
