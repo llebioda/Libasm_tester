@@ -11,7 +11,6 @@ char *A_1_000_000_000 = NULL;
 
 void generate_long_string()
 {
-    const int BILLION = 1000000000;
     A_1_000_000_000 = malloc(BILLION + 1);
     if (!A_1_000_000_000)
     {

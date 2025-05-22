@@ -172,7 +172,7 @@ void strcpy_tester(void)
     strcpy_test(A_1_000, 1001);
     strcpy_test(B_1_000, 1001);
     strcpy_test(A_10_000, 10001);
-    strcpy_test(A_1_000_000_000, 1000000001);
+    strcpy_test(A_1_000_000_000, BILLION + 1);
 
     /* BENCHMARK */
     strcpy_benchmark("", 1);

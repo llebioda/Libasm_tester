@@ -1,7 +1,6 @@
 #include "libasm_tester.h"
 
 extern char *ft_strdup(const char *s);
-extern size_t ft_strlen(const char *s);
 
 static t_bool strdup_is_valid(const char *src, const char *res, const int res_errno)
 {
@@ -25,7 +24,7 @@ static t_bool strdup_is_valid(const char *src, const char *res, const int res_er
 
     if (src == NULL && res != NULL)
     {
-        printf(RED "[STRDUP] Wanted NULL buffer on [%s], but got: %p (%s)" RESET "\n",
+        printf(RED "[STRDUP] Wanted NULL pointer on [%s], but got: %p (%s)" RESET "\n",
             get_printable_str(src), res, res);
         return FALSE;
     }
@@ -39,7 +38,7 @@ static t_bool strdup_is_valid(const char *src, const char *res, const int res_er
     if (strcmp(src, res) != 0)
     {
         printf(RED "[STRDUP] Diff [%s] != [%s] (len : %zu | %zu)" RESET "\n",
-            get_printable_str(src), get_printable_str(res), ft_strlen(src), ft_strlen(res));
+            get_printable_str(src), get_printable_str(res), strlen(src), strlen(res));
         return FALSE;
     }
 
