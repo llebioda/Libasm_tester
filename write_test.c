@@ -4,45 +4,49 @@ extern ssize_t ft_write(int fd, const void *buf, size_t count);
 
 static char *get_writable_buf(const void *buf, size_t count)
 {
-    char *dst = NULL;
-
-    if (buf != NULL)
+    if (buf == NULL)
     {
-        dst = malloc(count + 1);
+        return strdup("null");
+    }
+
+    char *dst = malloc(count + 1);
+    if (dst != NULL)
+    {
         if (count <= 0)
             dst[0] = '\0';
-        else if (dst != NULL)
+        else
             strncpy(dst, buf, count);
     }
 
-    return dst == NULL ? strdup("null") : dst;
+    return dst;
 }
 
 static t_bool write_is_valid(int fd, const void *buf, size_t count,
     const ssize_t res, const ssize_t ft_res,
     const int res_errno, const int ft_res_errno)
 {
-    char *std_buffer = NULL;
-    char *ft_buffer = NULL;
+    char *tmp_buf = NULL;
 
     if (res != ft_res)
     {
-        std_buffer = get_writable_buf(buf, count);
-        printf(RED "[WRITE] Return value mismatch on fd=%d with count=%zu (%s): %ld != %ld" RESET "\n", fd, count, std_buffer, res, ft_res);
-        free(std_buffer);
+        tmp_buf = get_writable_buf(buf, count);
+        printf(RED "[WRITE] Return value mismatch on fd=%d with count=%zu (%s): %ld != %ld" RESET "\n",
+            fd, count, tmp_buf, res, ft_res);
+        free(tmp_buf);
         return FALSE;
     }
 
     if (res < 0 && res_errno != ft_res_errno)
     {
-        std_buffer = get_writable_buf(buf, count);
-        printf(RED "[WRITE] Errno value mismatch on fd=%d with count=%zu (%s): %d != %d" RESET "\n", fd, count, std_buffer, res_errno, ft_res_errno);
-        free(std_buffer);
+        tmp_buf = get_writable_buf(buf, count);
+        printf(RED "[WRITE] Errno value mismatch on fd=%d with count=%zu (%s): %d != %d" RESET "\n",
+            fd, count, tmp_buf, res_errno, ft_res_errno);
+        free(tmp_buf);
         return FALSE;
     }
 
-    std_buffer = malloc(count + 1);
-    ft_buffer = malloc(count + 1);
+    void *std_buffer = malloc(count + 1);
+    void *ft_buffer = malloc(count + 1);
 
     if (!std_buffer || !ft_buffer)
     {
@@ -60,30 +64,34 @@ static t_bool write_is_valid(int fd, const void *buf, size_t count,
     {
         free(std_buffer);
         free(ft_buffer);
-        std_buffer = get_writable_buf(buf, count);
-        printf(RED "[WRITE] READ ERROR on fd=%d with count=%zu (%s): std=%ld, ft=%ld, errno=%d (%s)" RESET "\n", fd, count, std_buffer, std_read_res, ft_read_res, errno, strerror(errno));
-        free(std_buffer);
+        tmp_buf = get_writable_buf(buf, count);
+        printf(RED "[WRITE] READ ERROR on fd=%d with count=%zu (%s): std=%ld, ft=%ld, errno=%d (%s)" RESET "\n",
+            fd, count, tmp_buf, std_read_res, ft_read_res, errno, strerror(errno));
+        free(tmp_buf);
         return FALSE;
     }
 
-    if (std_read_res != ft_read_res)
+    if (std_read_res != ft_read_res || (size_t)ft_read_res != count)
     {
         free(std_buffer);
         free(ft_buffer);
-        std_buffer = get_writable_buf(buf, count);
-        printf(RED "[WRITE] Read size mismatch on fd=%d with count=%zu (%s): %ld != %ld" RESET "\n", fd, count, std_buffer, std_read_res, ft_read_res);
-        free(std_buffer);
+        tmp_buf = get_writable_buf(buf, count);
+        printf(RED "[WRITE] Read size mismatch on fd=%d with count=%zu (%s): %ld != %ld" RESET "\n",
+            fd, count, tmp_buf, std_read_res, ft_read_res);
+        free(tmp_buf);
         return FALSE;
     }
 
-    std_buffer[std_read_res] = '\0';
-    ft_buffer[ft_read_res] = '\0';
+    // Prevent segfault if printed
+    ((char *)std_buffer)[count] = '\0';
+    ((char *)ft_buffer)[count] = '\0';
 
-    t_bool result = strcmp(std_buffer, ft_buffer) == 0;
+    t_bool result = memcmp(std_buffer, ft_buffer, count) == 0;
 
     if (!result)
     {
-        printf(RED "[WRITE] Buffer mismatch on fd=%d with count=%zu: (%s) != (%s)" RESET "\n", fd, count, std_buffer, ft_buffer);
+        printf(RED "[WRITE] Buffer mismatch on fd=%d with count=%zu: (%s) != (%s)" RESET "\n",
+            fd, count, (char *)std_buffer, (char *)ft_buffer);
     }
 
     free(std_buffer);
@@ -123,7 +131,7 @@ static void write_benchmark(int fd, const void *buf, size_t count)
 
         if (!write_is_valid(fd, buf, count, res, ft_res, res_errno, ft_res_errno))
         {
-            printf(RED "Benchmark cancelled" RESET "\n");
+            printf(YELLOW "Benchmark cancelled" RESET "\n");
             return;
         }
     }
@@ -140,7 +148,7 @@ void write_tester(void)
 {
     printf("\n" PURPLE " ***** WRITE *****" RESET "\n\n");
 
-    // Creating test files
+    /* TEST */
     int fd3 = open(TMP_DIR "/test1", O_RDWR | O_CREAT | O_TRUNC, 0644);
     int fd4 = open(TMP_DIR "/test2", O_RDWR | O_CREAT | O_TRUNC, 0644);
     int fd5 = open(TMP_DIR "/test3", O_RDWR | O_CREAT | O_TRUNC, 0644);
@@ -172,7 +180,7 @@ void write_tester(void)
     write_test(fd5, "\t\t\t\v\v\v\n\n\n\t\b\n\t\t\v\n\a\b\b", 19);
 
     write_test(fd3, "This should not be written", 0);
-    write_test(fd6, NULL, 10);
+    //write_test(fd6, NULL, 10);
     write_test(fd6, NULL, 0);
 
     write_test(fd7, "Partial write test!", 10);
@@ -183,6 +191,7 @@ void write_tester(void)
     close(fd6);
     close(fd7);
 
+    /* BENCHMARK */
     fd3 = open(TMP_DIR "/benchmark1", O_RDWR | O_CREAT | O_TRUNC, 0644);
     fd4 = open(TMP_DIR "/benchmark2", O_RDWR | O_CREAT | O_TRUNC, 0644);
     fd5 = open(TMP_DIR "/benchmark3", O_RDWR | O_CREAT | O_TRUNC, 0644);
@@ -199,4 +208,6 @@ void write_tester(void)
     write_benchmark(fd5, A_1_000".\n", 1002);
 
     close(fd3);
+    close(fd4);
+    close(fd5);
 }

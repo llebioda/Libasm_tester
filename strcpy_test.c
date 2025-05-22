@@ -17,7 +17,7 @@ static t_bool strcpy_is_valid(const char *src, size_t buf_size,
     if ((res == NULL && ft_res != NULL) || (res != NULL && ft_res == NULL)
         || (res != NULL && ft_res != NULL && strcmp(res, ft_res) != 0))
     {
-        printf(RED "[STRCPY] diff for [%s] with buf_size = %zu : [%s] != [%s] (len : %zu | %zu)" RESET "\n",
+        printf(RED "[STRCPY] diff for [%s] with buf_size=%zu : [%s] != [%s] (len : %zu | %zu)" RESET "\n",
             src, buf_size, res, ft_res, ft_strlen(res), ft_strlen(ft_res));
         result = FALSE;
     }
@@ -27,11 +27,21 @@ static t_bool strcpy_is_valid(const char *src, size_t buf_size,
 
 static void strcpy_test(const char *src, const size_t buf_size)
 {
-    char *buf1 = NULL, *buf2 = NULL, *res = NULL, *ft_res = NULL;
+    char *buf1 = NULL, *buf2 = NULL;
+    char *res = NULL, *ft_res = NULL;
     if (src != NULL)
     {
         buf1 = malloc(buf_size);
         buf2 = malloc(buf_size);
+        if (!buf1 || !buf2)
+        {
+            free(buf1);
+            free(buf2);
+            printf(RED "[STRCPY] MALLOC ERROR on [%s] with buf_size=%zu" RESET "\n",
+                src, buf_size);
+            return;
+        }
+
         res = strcpy(buf1, src);
         ft_res = ft_strcpy(buf2, src);
     }
@@ -44,14 +54,24 @@ static void strcpy_test(const char *src, const size_t buf_size)
 
 static void strcpy_benchmark(const char *src, const size_t buf_size)
 {
+    char *buf1 = malloc(buf_size);
+    char *buf2 = malloc(buf_size);
+
+    if (!buf1 || !buf2)
+    {
+        free(buf1);
+        free(buf2);
+        printf(RED "[STRCPY] MALLOC ERROR on [%s] with buf_size=%zu" RESET "\n",
+            src, buf_size);
+        printf(YELLOW "Benchmark cancelled" RESET "\n");
+        return;
+    }
+
     clock_t start, end;
     double time_lib = 0.0, time_ft = 0.0, efficiency;
 
     for (int i = 0; i < BENCHMARK_ITERATIONS; i++)
     {
-        char *buf1 = malloc(buf_size);
-        char *buf2 = malloc(buf_size);
-
         start = clock();
         char *res = strcpy(buf1, src);
         end = clock();
@@ -64,15 +84,16 @@ static void strcpy_benchmark(const char *src, const size_t buf_size)
 
         if (!strcpy_is_valid(src, buf_size, buf2, res, ft_res))
         {
-            printf(RED "Benchmark cancelled" RESET "\n");
+            printf(YELLOW "Benchmark cancelled" RESET "\n");
             free(buf1);
             free(buf2);
             return;
         }
 
-        free(buf1);
-        free(buf2);
     }
+
+    free(buf1);
+    free(buf2);
 
     efficiency = (time_lib / time_ft) * 100;
 
@@ -86,6 +107,7 @@ void strcpy_tester(void)
 {
     printf("\n" PURPLE " ***** STRCPY *****" RESET "\n\n");
 
+    /* TEST */
     strcpy_test(NULL, 1);
     strcpy_test("", 1);
     strcpy_test("", 0);
@@ -156,6 +178,7 @@ void strcpy_tester(void)
     strcpy_test(B_1_000, 1001);
     strcpy_test(A_10_000, 10001);
 
+    /* BENCHMARK */
     strcpy_benchmark("", 1);
     strcpy_benchmark("Hello", 6);
     strcpy_benchmark("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 53);

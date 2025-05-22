@@ -7,7 +7,8 @@ static t_bool strcmp_is_valid(const char *s1, const char *s2, const int res, con
 {
     if (res != ft_res)
     {
-        printf(RED "[STRCMP] diff for [%s]_[%s] : %d != %d" RESET "\n", s1, s2, res, ft_res);
+        printf(RED "[STRCMP] diff for [%s]_[%s] : %d != %d" RESET "\n",
+            s1, s2, res, ft_res);
         return FALSE;
     }
 
@@ -49,7 +50,7 @@ static void strcmp_benchmark(const char *s1, const char *s2)
 
         if (!strcmp_is_valid(s1, s2, res, ft_res))
         {
-            printf(RED "Benchmark cancelled" RESET "\n");
+            printf(YELLOW "Benchmark cancelled" RESET "\n");
             return;
         }
     }
@@ -66,6 +67,7 @@ void strcmp_tester(void)
 {
     printf("\n" PURPLE " ***** STRCMP *****" RESET "\n\n");
 
+    /* TEST */
     strcmp_test("", "");
     strcmp_test("a", "a");
     strcmp_test("a", "b");
@@ -131,6 +133,7 @@ void strcmp_tester(void)
     strcmp_test(A_10_000"B", A_10_000"C");
     strcmp_test(A_10_000, B_1_000);
 
+    /* BENCHMARK */
     strcmp_benchmark("", "");
     strcmp_benchmark("a", "a");
     strcmp_benchmark("a", "b");

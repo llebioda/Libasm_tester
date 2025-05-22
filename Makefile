@@ -24,7 +24,8 @@ SRCS =	main.c \
 		strlen_test.c \
 		strcpy_test.c \
 		strcmp_test.c \
-		write_test.c
+		write_test.c \
+		read_test.c
 #$(addsuffix _test.c, $(TARGETS_ARGS))
 
 OBJDIR = ./build/

@@ -40,7 +40,7 @@ static void strlen_benchmark(const char *s)
 
         if (!strlen_is_valid(s, res, ft_res))
         {
-            printf(RED "Benchmark cancelled" RESET "\n");
+            printf(YELLOW "Benchmark cancelled" RESET "\n");
             return;
         }
     }
@@ -57,6 +57,7 @@ void strlen_tester(void)
 {
     printf("\n" PURPLE " ***** STRLEN *****" RESET "\n\n");
 
+    /* TEST */
     strlen_test(NULL);
     strlen_test("");
     strlen_test("a");
@@ -140,6 +141,7 @@ void strlen_tester(void)
     strlen_test(B_1_000"A");
     strlen_test(A_10_000);
 
+    /* BENCHMARK */
     strlen_benchmark("");
     strlen_benchmark("Hello");
     strlen_benchmark("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");

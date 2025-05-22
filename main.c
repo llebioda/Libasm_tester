@@ -4,6 +4,7 @@ void strlen_tester(void);
 void strcpy_tester(void);
 void strcmp_tester(void);
 void write_tester(void);
+void read_tester(void);
 
 static t_bool argv_contains(char **argv, int argc, const char *value)
 {
@@ -21,6 +22,8 @@ static t_bool argv_contains(char **argv, int argc, const char *value)
 
 int main(int argc, char **argv)
 {
+    srand(time(NULL));
+
     if (argc <= 1 || argv_contains(argv, argc, "strlen"))
         strlen_tester();
 
@@ -32,6 +35,9 @@ int main(int argc, char **argv)
 
     if (argc <= 1 || argv_contains(argv, argc, "write"))
         write_tester();
+
+    if (argc <= 1 || argv_contains(argv, argc, "read"))
+        read_tester();
 
     if (argc <= 1)
         printf("\n" BLUE " ***** All Test Ended *****" RESET "\n");
