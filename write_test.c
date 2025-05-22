@@ -15,7 +15,17 @@ static char *get_writable_buf(const void *buf, size_t count)
         if (count <= 0)
             dst[0] = '\0';
         else
-            strncpy(dst, buf, count);
+        {
+            if (count >= 200)
+            {
+                strncpy(dst, buf, 197);
+                dst[197] = '.';
+                dst[198] = '.';
+                dst[199] = '.';
+            }
+            else
+                strncpy(dst, buf, count);
+        }
     }
 
     return dst;
@@ -107,7 +117,7 @@ static t_bool write_is_valid(const int fd, const void *buf, const size_t count,
     if (!result)
     {
         printf(RED "[WRITE] Buffer mismatch on fd=%d with count=%zu: (%s) != (%s)" RESET "\n",
-            fd, count, (char *)std_buffer, (char *)ft_buffer);
+            fd, count, get_printable_str((char *)std_buffer), get_printable_str((char *)ft_buffer));
     }
 
     free(std_buffer);

@@ -6,7 +6,8 @@ static t_bool strlen_is_valid(const char *s, const int res, const int ft_res)
 {
     if (res != ft_res)
     {
-        printf(RED "[STRLEN] Diff for [%s] : %d != %d" RESET "\n", s, res, ft_res);
+        printf(RED "[STRLEN] Diff for [%s] : %d != %d" RESET "\n",
+            get_printable_str(s), res, ft_res);
         return FALSE;
     }
 
@@ -140,6 +141,7 @@ void strlen_tester(void)
     strlen_test(B_1_000);
     strlen_test(B_1_000"A");
     strlen_test(A_10_000);
+    strlen_test(A_1_000_000_000);
 
     /* BENCHMARK */
     strlen_benchmark("");

@@ -10,7 +10,7 @@ static t_bool read_is_valid(const int fd, const char *expected, const size_t cou
     if (res != ft_res)
     {
         printf(RED "[READ] Return value mismatch on fd=%d with count=%zu (%s): %ld != %ld" RESET "\n",
-            fd, count, expected, res, ft_res);
+            fd, count, get_printable_str(expected), res, ft_res);
         return FALSE;
     }
 
@@ -21,14 +21,14 @@ static t_bool read_is_valid(const int fd, const char *expected, const size_t cou
         {
             printf(RED "[READ] " RESET RED_ "** TEST ERROR **" RESET RED
                 "\nErrno value mismatch on fd=%d with count=%zu (%s)\nexpected : %d\ngot > std: %d\n    > ft : %d" RESET "\n",
-                fd, count, expected, errno_value, res_errno, ft_res_errno);
+                fd, count, get_printable_str(expected), errno_value, res_errno, ft_res_errno);
             return FALSE;
         }
 
         if (res_errno != ft_res_errno)
         {
             printf(RED "[READ] Errno value mismatch on fd=%d with count=%zu (%s): %d != %d" RESET "\n",
-                fd, count, expected, res_errno, ft_res_errno);
+                fd, count, get_printable_str(expected), res_errno, ft_res_errno);
             return FALSE;
         }
 
@@ -44,7 +44,7 @@ static t_bool read_is_valid(const int fd, const char *expected, const size_t cou
     {
         printf(RED "[READ] " RESET RED_ "** TEST ERROR **" RESET RED
             "\nBuffer mismatch on fd=%d with count=%zu\nexpected : (%s)\ngot > std: (%s)\n    > ft : (%s)" RESET "\n",
-            fd, count, expected, (char *)std_buffer, (char *)ft_buffer);
+            fd, count, get_printable_str(expected), get_printable_str((char *)std_buffer), get_printable_str((char *)ft_buffer));
         return FALSE;
     }
 
@@ -53,7 +53,7 @@ static t_bool read_is_valid(const int fd, const char *expected, const size_t cou
     if (!result)
     {
         printf(RED "[READ] Buffer mismatch on fd=%d with count=%zu (%s): (%s) != (%s)" RESET "\n",
-            fd, count, expected, (char *)std_buffer, (char *)ft_buffer);
+            fd, count, get_printable_str(expected), get_printable_str((char *)std_buffer), get_printable_str((char *)ft_buffer));
     }
 
     return result;
@@ -69,7 +69,7 @@ static void read_test(int fd, const char *expected, size_t count, const int errn
         free(std_buffer);
         free(ft_buffer);
         printf(RED "[READ] MALLOC ERROR on fd=%d with expected=[%s] and count=%zu" RESET "\n",
-            fd, expected, count);
+            fd, get_printable_str(expected), count);
         return;
     }
 
@@ -101,7 +101,7 @@ static void read_benchmark(int fd, const char *expected, size_t count, const int
         free(std_buffer);
         free(ft_buffer);
         printf(RED "[READ] MALLOC ERROR on fd=%d with expected=[%s] and count=%zu" RESET "\n",
-            fd, expected, count);
+            fd, get_printable_str(expected), count);
         printf(YELLOW "Benchmark cancelled" RESET "\n");
         return;
     }

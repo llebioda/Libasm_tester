@@ -3,7 +3,7 @@ TMP_DIR = tmp
 LIBASM_DIR = ../
 LIBASM = $(LIBASM_DIR)libasm.a
 
-TARGETS_ARGS := strlen \
+TARGETS_ARGS :=	strlen \
 				strcpy \
 				strcmp \
 				write \
@@ -20,12 +20,13 @@ ARGS := $(filter $(TARGETS_ARGS), $(MAKECMDGOALS))
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g -D $(TMP_DIR)
 
-SRCS =	main.c \
+SRCS =	main.c utils.c \
 		strlen_test.c \
 		strcpy_test.c \
 		strcmp_test.c \
 		write_test.c \
-		read_test.c
+		read_test.c \
+		strdup_test.c
 #$(addsuffix _test.c, $(TARGETS_ARGS))
 
 OBJDIR = ./build/

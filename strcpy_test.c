@@ -10,15 +10,15 @@ static t_bool strcpy_is_valid(const char *src, size_t buf_size,
 
     if (buf2 != ft_res)
     {
-        printf(RED "[STRCPY] returned pointer value is not the same as the one given as parameters : %p != %p" RESET "\n", buf2, ft_res);
+        printf(RED "[STRCPY] Returned pointer value is not the same as the one given as parameter : %p != %p" RESET "\n", buf2, ft_res);
         result = FALSE;
     }
 
     if ((res == NULL && ft_res != NULL) || (res != NULL && ft_res == NULL)
         || (res != NULL && ft_res != NULL && strcmp(res, ft_res) != 0))
     {
-        printf(RED "[STRCPY] diff for [%s] with buf_size=%zu : [%s] != [%s] (len : %zu | %zu)" RESET "\n",
-            src, buf_size, res, ft_res, ft_strlen(res), ft_strlen(ft_res));
+        printf(RED "[STRCPY] Diff for [%s] with buf_size=%zu : [%s] != [%s] (len : %zu | %zu)" RESET "\n",
+            get_printable_str(src), buf_size, get_printable_str(res), get_printable_str(ft_res), ft_strlen(res), ft_strlen(ft_res));
         result = FALSE;
     }
 
@@ -38,7 +38,7 @@ static void strcpy_test(const char *src, const size_t buf_size)
             free(buf1);
             free(buf2);
             printf(RED "[STRCPY] MALLOC ERROR on [%s] with buf_size=%zu" RESET "\n",
-                src, buf_size);
+                get_printable_str(src), buf_size);
             return;
         }
 
@@ -62,7 +62,7 @@ static void strcpy_benchmark(const char *src, const size_t buf_size)
         free(buf1);
         free(buf2);
         printf(RED "[STRCPY] MALLOC ERROR on [%s] with buf_size=%zu" RESET "\n",
-            src, buf_size);
+            get_printable_str(src), buf_size);
         printf(YELLOW "Benchmark cancelled" RESET "\n");
         return;
     }
@@ -177,6 +177,7 @@ void strcpy_tester(void)
     strcpy_test(A_1_000, 1001);
     strcpy_test(B_1_000, 1001);
     strcpy_test(A_10_000, 10001);
+    strcpy_test(A_1_000_000_000, 1000000001);
 
     /* BENCHMARK */
     strcpy_benchmark("", 1);
