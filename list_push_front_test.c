@@ -39,7 +39,7 @@ static void list_push_front_test(const char *expected[], int count)
     else
         printf(RED "[LIST PUSH FRONT] Mismatch detected" RESET "\n");
 
-    printf("%ssize: %d (expected: %d)" RESET "\n", size == count ? GREEN : RED, size, count);
+    printf("%sSize: %d (expected: %d)" RESET "\n", size == count ? GREEN : RED, size, count);
 
     if (!is_valid)
     {
