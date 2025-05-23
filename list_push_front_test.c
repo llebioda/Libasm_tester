@@ -27,7 +27,7 @@ static void list_push_front_test(const char *expected[], int count)
 {
     t_list *list = NULL;
 
-    // Push in the reverse order; since push_front adds to the beginning,
+    // Push in the reverse order, since push_front adds to the beginning,
     for (int i = count - 1; i >= 0; i--)
         ft_list_push_front(&list, (void *)expected[i]);
 
@@ -41,18 +41,25 @@ static void list_push_front_test(const char *expected[], int count)
 
     printf("%ssize: %d (expected: %d)" RESET "\n", size == count ? GREEN : RED, size, count);
 
-    printf("%sExpected: [", is_valid ? GREEN : RED);
-    for (int i = 0; i < count; i++)
+    if (!is_valid)
     {
-        printf("'%s'", expected[i]);
-        if (i < count - 1)
-            printf(", ");
-    }
-    printf("]\n");
+        printf(RED "Expected: [");
+        for (int i = 0; i < count; i++)
+        {
+            printf("'%s'", expected[i]);
+            if (i < count - 1)
+                printf(", ");
+        }
+        printf("]" RESET "\n");
 
-    printf("Result :  ");
-    print_list(list);
-    printf("\n\n" RESET);
+        printf(RED "Result :  ");
+        print_list(list);
+        printf(RESET "\n\n");
+    }
+    else
+    {
+        printf(GREEN "The list is correct" RESET "\n\n");
+    }
 
     free_list(&list);
 }
