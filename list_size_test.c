@@ -4,19 +4,19 @@ void list_size_tester(void) {}
 
 #include "libasm_tester.h"
 
+extern int ft_list_size(t_list *begin_list);
+
 static t_list *create_node()
 {
     return calloc(1, sizeof(t_list));
 }
 
-extern int ft_list_size(t_list *begin_list);
-
-void list_size_test(t_list *list, int expected)
+static void list_size_test(t_list *list, int expected)
 {
     int size = ft_list_size(list);
     t_bool is_valid = size == expected;
 
-    printf("%s[LIST SIZE] ft_list_size: %2d %c= %-2d" RESET "\n",
+    printf("%s[LIST SIZE] ft_list_size: %3d %c= %-3d" RESET "\n",
         is_valid ? GREEN : RED, size, is_valid ? '=' : '!', expected);
 }
 

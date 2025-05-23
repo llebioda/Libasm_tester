@@ -35,3 +35,27 @@ void free_list(t_list **list)
         free(tmp);
     }
 }
+
+void print_list(t_list *list)
+{
+    printf("[");
+    while (list != NULL)
+    {
+        printf("'%s'", (char *)list->data);
+        list = list->next;
+        if (list != NULL)
+            printf(", ");
+    }
+    printf("]");
+}
+
+int TESTER_ft_list_size(t_list *begin_list)
+{
+    int i = 0;
+    while (begin_list != NULL)
+    {
+        begin_list = begin_list->next;
+        i++;
+    }
+    return (i);
+}
