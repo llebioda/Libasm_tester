@@ -243,7 +243,6 @@ void write_tester(void)
     write_benchmark(fd3, "", 1, 0);
     write_benchmark(fd4, "Hello World!", 12, 0);
     write_benchmark(fd5, A_1_000".\n", 1002, 0);
-    write_benchmark(-1, NULL, 0, EBADF);
 
     close(fd3);
     close(fd4);

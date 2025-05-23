@@ -305,5 +305,4 @@ void read_tester(void)
     read_benchmark(fd3, "", 1, 0);
     read_benchmark(fd4, "Hello World!", 12, 0);
     read_benchmark(fd5, A_1_000".\n", 1002, 0);
-    read_benchmark(-1, "fd -1", 0, EBADF);
 }

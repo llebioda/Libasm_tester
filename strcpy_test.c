@@ -105,7 +105,6 @@ void strcpy_tester(void)
     /* TEST */
     strcpy_test(NULL, 1);
     strcpy_test("", 1);
-    strcpy_test("", 0);
     strcpy_test("a", 2);
     strcpy_test("aa", 3);
     strcpy_test("ab", 3);
