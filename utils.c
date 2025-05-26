@@ -36,12 +36,28 @@ void free_list(t_list **list)
     }
 }
 
-void print_list(t_list *list)
+void print_list(t_list *list, t_data_format data_format)
 {
     printf("[");
     while (list != NULL)
     {
-        printf("'%s'", (char *)list->data);
+        if (data_format == STRING)
+            printf("'%s'", (char *)list->data);
+        else if (data_format == INT)
+        {
+            if (list->data == NULL)
+                printf("null");
+            else
+                printf("%d", *((int *)list->data));
+        }
+        else if (data_format == FLOAT)
+        {
+            if (list->data == NULL)
+                printf("null");
+            else
+                printf("%f", *((float *)list->data));
+        }
+
         list = list->next;
         if (list != NULL)
             printf(", ");

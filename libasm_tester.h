@@ -48,6 +48,12 @@ typedef struct s_list
     struct s_list *next;
 } t_list;
 
+typedef enum e_data_format {
+    STRING,
+    INT,
+    FLOAT
+} t_data_format;
+
 void free_list(t_list **list);
-void print_list(t_list *list);
+void print_list(t_list *list, t_data_format data_format);
 int TESTER_ft_list_size(t_list *begin_list);

@@ -53,7 +53,7 @@ static void list_push_front_test(const char *expected[], int count)
         printf("]" RESET "\n");
 
         printf(RED "Result :  ");
-        print_list(list);
+        print_list(list, STRING);
         printf(RESET "\n\n");
     }
     else
@@ -106,6 +106,7 @@ void list_push_front_tester(void)
         expected_values[i] = test6_possible_values[rand() % test6_possible_values_count];
 
     list_push_front_test(expected_values, test6_nodes_count);
+    free(expected_values);
 }
 
 #endif
