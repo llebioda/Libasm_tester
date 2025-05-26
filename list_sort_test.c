@@ -71,15 +71,15 @@ static t_bool verify_list_sorted(t_list *list, t_list *sorted_list, int (*cmp)()
     return (list == NULL && sorted_list == NULL);
 }
 
-static int cmp_str(const void *a, const void *b)
+static int cmp_str(const char *a, const char *b)
 {
-    return strcmp((const char *)a, (const char *)b);
+    //printf("strcmp(%s, %s) : %d\n", a, b, strcmp(a, b));
+    return strcmp(a, b);
 }
 
 static void list_sort_test(const void **input, int count, int (*cmp)())
 {
     t_list *list = create_list(input, count);
-    print_list(list);
     ft_list_sort(&list, cmp);
 
     t_list *sorted_list = create_list(input, count);
