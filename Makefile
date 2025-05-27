@@ -1,7 +1,8 @@
 TMP_DIR = tmp
 
-LIBASM_DIR = ../
-LIBASM = $(LIBASM_DIR)libasm.a
+LIBASM_DIR = ..
+LIBASM = $(LIBASM_DIR)/libasm.a
+LIBASM_LIB = -L$(LIBASM_DIR) -lasm
 
 BONUS_TARGETS_ARGS := \
 	atoi_base \
@@ -21,12 +22,12 @@ TARGETS_ARGS := $(BONUS_TARGETS_ARGS) \
 ARGS := $(filter $(TARGETS_ARGS), $(MAKECMDGOALS))
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -D TMP_DIR='"$(TMP_DIR)"'
+CFLAGS = -Wall -Wextra -Werror -g3 -D TMP_DIR='"$(TMP_DIR)"'
 
 # Iterate over each target and check if the corresponding file exists
 # If it doesnt exist add a DEFINE to disable that part to avoid error during compilation
 define CHECK_FILE
-ifneq ($(wildcard $(LIBASM_DIR)ft_$(1)_bonus.s), $(LIBASM_DIR)ft_$(1)_bonus.s)
+ifneq ($(wildcard $(LIBASM_DIR)/ft_$(1)_bonus.s), $(LIBASM_DIR)/ft_$(1)_bonus.s)
     CFLAGS += -D disable_$(1)
 endif
 endef
@@ -52,7 +53,7 @@ test: libasm $(NAME) $(TMP_DIR)
 	@./$(NAME) $(ARGS)
 
 $(NAME): $(HEADERS) $(OBJS) $(LIBASM)
-	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBASM) -o $(NAME)
+	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBASM_LIB) -o $(NAME)
 	@echo -n "$(GREEN_COLOR)Compilation successfull$(RESET_COLOR)\n"
 
 $(OBJDIR)%.o: %.c | $(OBJDIR)
@@ -75,6 +76,7 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean
+	@make -C $(LIBASM_DIR) fclean --no-print-directory
 	@$(MAKE) --no-print-directory test
 
 -include $(DEPS)

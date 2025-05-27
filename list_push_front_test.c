@@ -6,7 +6,7 @@ void list_push_front_tester(void) {}
 
 extern void ft_list_push_front(t_list **begin_list, void *data);
 
-static t_bool verify_list_content(t_list *list, const char *expected[], int count)
+static t_bool verify_list_content(t_list *list, const char **expected, int count)
 {
     for (int i = 0; i < count; i++)
     {
@@ -23,7 +23,7 @@ static t_bool verify_list_content(t_list *list, const char *expected[], int coun
     return (list == NULL);
 }
 
-static void list_push_front_test(const char *expected[], int count)
+static void list_push_front_test(const char **expected, int count)
 {
     t_list *list = NULL;
 

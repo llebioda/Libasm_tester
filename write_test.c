@@ -233,7 +233,7 @@ void write_tester(void)
     fd4 = open(TMP_DIR "/benchmark2", O_RDWR | O_CREAT | O_TRUNC, 0644);
     fd5 = open(TMP_DIR "/benchmark3", O_RDWR | O_CREAT | O_TRUNC, 0644);
 
-    if (fd3 < 0 | fd4 < 0 | fd5 < 0)
+    if (fd3 < 0 || fd4 < 0 || fd5 < 0)
     {
         printf(RED "[WRITE] ERROR Failed to open benchmark files!" RESET "\n");
         return;
