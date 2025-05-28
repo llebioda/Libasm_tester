@@ -64,7 +64,7 @@ static void list_push_front_test(const char **expected, int count)
         printf(GREEN "The list is correct" RESET "\n\n");
     }
 
-    free_list(&list);
+    free_list(&list, NULL);
 }
 
 t_bool list_push_front_tester(void)

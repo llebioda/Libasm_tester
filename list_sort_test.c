@@ -35,92 +35,15 @@ static void TESTER_ft_list_sort(t_list **begin_list, int (*cmp)())
     *begin_list = sorted;
 }
 
-static t_list *create_list(const void **values, int count)
-{
-    t_list *head = NULL;
-    t_list *tail = NULL;
-
-    for (int i = 0; i < count; i++)
-    {
-        t_list *new_node = malloc(sizeof(t_list));
-        if (new_node == NULL)
-        {
-            printf(RED "[LIST_SORT] MALLOC ERROR while creating list" RESET "\n");
-            free(head);
-            return NULL;
-        }
-        new_node->data = (void *)values[i];
-        new_node->next = NULL;
-
-        if (tail != NULL)
-            tail->next = new_node;
-        else
-            head = new_node;
-
-        tail = new_node;
-    }
-    return head;
-}
-
-static t_bool verify_list_sorted(t_list *list, t_list *sorted_list, int (*cmp)())
-{
-    while (list != NULL && sorted_list != NULL)
-    {
-        if (cmp(list->data, sorted_list->data) != 0)
-            return FALSE; // If elements differ, sorting failed.
-
-        list = list->next;
-        sorted_list = sorted_list->next;
-    }
-
-    // Both lists should reach NULL at the same time.
-    return (list == NULL && sorted_list == NULL);
-}
-
-static int cmp_str(const char *a, const char *b)
-{
-    if (a == b)
-        return (0);
-    if (a == NULL)
-        return (-1);
-    if (b == NULL)
-        return (1);
-    return strcmp(a, b);
-}
-
-static int cmp_int(const int *a, const int *b)
-{
-    if (a == b)
-        return (0);
-    if (a == NULL)
-        return (-1);
-    if (b == NULL)
-        return (1);
-    return *a - *b;
-}
-
-static int cmp_float(const float *a, const float *b)
-{
-    if (a == b)
-        return (0);
-    if (a == NULL)
-        return (-1);
-    if (b == NULL)
-        return (1);
-    if (*a == *b)
-        return 0;
-    return *a > *b ? 1 : -1;
-}
-
 static void list_sort_test(const void **input, int count, int (*cmp)(), t_data_format data_format)
 {
-    t_list *list = create_list(input, count);
-    ft_list_sort(&list, cmp);
+    t_list *list = create_list(input, count, 0);
+    TESTER_ft_list_sort(&list, cmp);
 
-    t_list *sorted_list = create_list(input, count);
+    t_list *sorted_list = create_list(input, count, 0);
     TESTER_ft_list_sort(&sorted_list, cmp);
 
-    t_bool is_sorted = verify_list_sorted(list, sorted_list, cmp);
+    t_bool is_sorted = list_equals(list, sorted_list, cmp);
     int size = TESTER_ft_list_size(list);
 
     if (size != count)
@@ -136,7 +59,7 @@ static void list_sort_test(const void **input, int count, int (*cmp)(), t_data_f
     {
         printf(RED "Expected: ");
         print_list(sorted_list, data_format);
-        printf("\nResult :  ");
+        printf("\nResult  : ");
         print_list(list, data_format);
         printf(RESET "\n\n");
         all_success = FALSE;
@@ -146,8 +69,8 @@ static void list_sort_test(const void **input, int count, int (*cmp)(), t_data_f
         printf(GREEN "The list is correctly sorted" RESET "\n\n");
     }
 
-    free_list(&list);
-    free_list(&sorted_list);
+    free_list(&list, NULL);
+    free_list(&sorted_list, NULL);
 }
 
 t_bool list_sort_tester(void)
@@ -233,12 +156,12 @@ t_bool list_sort_tester(void)
     const float test11_min_value = -250.0;
     const float test11_max_value = 250.0;
 
-    const float test11_nodes_count = 200;
+    const int test11_nodes_count = 200;
     float **test11_input = malloc(test11_nodes_count * sizeof(float *));
     for (int i = 0; i < test11_nodes_count; i++)
     {
         test11_input[i] = malloc(sizeof(float));
-        *test11_input[i] = ((float)(rand()) / (float)RAND_MAX) * (test11_max_value - test11_min_value) + test11_min_value;
+        *test11_input[i] = ((float)rand() / (float)RAND_MAX) * (test11_max_value - test11_min_value) + test11_min_value;
     }
 
     list_sort_test((const void **)test11_input, test11_nodes_count, cmp_float, FLOAT);

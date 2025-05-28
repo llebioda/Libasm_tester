@@ -54,6 +54,15 @@ typedef enum e_data_format {
     FLOAT
 } t_data_format;
 
-void free_list(t_list **list);
+size_t sizeof_data_format(t_data_format data_format);
+void print_data_format(const void *data, t_data_format data_format);
+
+t_list *create_list(const void **values, int count, size_t values_size);
+void free_list(t_list **list, void (*free_fct)(void *));
 void print_list(t_list *list, t_data_format data_format);
+t_bool list_equals(t_list *list, t_list *expected_list, int (*cmp)());
 int TESTER_ft_list_size(t_list *begin_list);
+
+int cmp_str(const char *a, const char *b);
+int cmp_int(const int *a, const int *b);
+int cmp_float(const float *a, const float *b);

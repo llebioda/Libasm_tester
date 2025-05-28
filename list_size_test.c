@@ -36,13 +36,13 @@ t_bool list_size_tester(void)
     // Test 2: List with 1 element
     t_list *list = create_node();
     list_size_test(list, 1);
-    free_list(&list);
+    free_list(&list, NULL);
 
     // Test 3: List with 2 elements
     list = create_node();
     list->next = create_node();
     list_size_test(list, 2);
-    free_list(&list);
+    free_list(&list, NULL);
 
     // Test 4: List with 10 elements
     list = create_node();
@@ -53,7 +53,7 @@ t_bool list_size_tester(void)
         temp = temp->next;
     }
     list_size_test(list, 10);
-    free_list(&list);
+    free_list(&list, NULL);
 
     // Test 5: List with 30 elements
     list = create_node();
@@ -64,7 +64,7 @@ t_bool list_size_tester(void)
         temp = temp->next;
     }
     list_size_test(list, 30);
-    free_list(&list);
+    free_list(&list, NULL);
 
     // Test 6: Additional tests with different structures
     for (int i = 3; i <= 120; i += 2 + (int)(i * 0.1))
@@ -77,7 +77,7 @@ t_bool list_size_tester(void)
             temp = temp->next;
         }
         list_size_test(list, i);
-        free_list(&list);
+        free_list(&list, NULL);
     }
 
     return all_success;
