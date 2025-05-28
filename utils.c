@@ -161,6 +161,7 @@ int TESTER_ft_list_size(t_list *begin_list)
 
 int cmp_str(const char *a, const char *b)
 {
+    printf("%s", ""); // could make crash
     if (a == b)
         return (0);
     if (a == NULL)
@@ -172,6 +173,7 @@ int cmp_str(const char *a, const char *b)
 
 int cmp_int(const int *a, const int *b)
 {
+    printf("%s", ""); // could make crash
     if (a == b)
         return (0);
     if (a == NULL)
@@ -183,6 +185,7 @@ int cmp_int(const int *a, const int *b)
 
 int cmp_float(const float *a, const float *b)
 {
+    printf("%s", ""); // could make crash
     if (a == b)
         return (0);
     if (a == NULL)

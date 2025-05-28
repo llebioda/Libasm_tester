@@ -54,7 +54,7 @@ test: libasm $(NAME) $(TMP_DIR)
 
 vtest: libasm $(NAME) $(TMP_DIR)
 	@echo -n "$(GREEN_COLOR)Executing with valgrind ./$(NAME)$(RESET_COLOR)\n"
-	@valgrind -q --show-leak-kinds=all --leak-check=full --track-origins=yes ./$(NAME) $(ARGS)
+	@valgrind --show-leak-kinds=all --leak-check=full --track-origins=yes ./$(NAME) $(ARGS)
 
 $(NAME): $(HEADERS) $(OBJS) $(LIBASM)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBASM_LIB) -o $(NAME)

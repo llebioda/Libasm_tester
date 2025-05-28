@@ -38,7 +38,7 @@ static void TESTER_ft_list_sort(t_list **begin_list, int (*cmp)())
 static void list_sort_test(const void **input, int count, int (*cmp)(), t_data_format data_format)
 {
     t_list *list = create_list(input, count, 0);
-    TESTER_ft_list_sort(&list, cmp);
+    ft_list_sort(&list, cmp);
 
     t_list *sorted_list = create_list(input, count, 0);
     TESTER_ft_list_sort(&sorted_list, cmp);
