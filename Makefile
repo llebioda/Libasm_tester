@@ -52,6 +52,10 @@ test: libasm $(NAME) $(TMP_DIR)
 	@echo -n "$(GREEN_COLOR)Executing ./$(NAME)$(RESET_COLOR)\n"
 	@./$(NAME) $(ARGS)
 
+vtest: libasm $(NAME) $(TMP_DIR)
+	@echo -n "$(GREEN_COLOR)Executing with valgrind ./$(NAME)$(RESET_COLOR)\n"
+	@valgrind -q --show-leak-kinds=all --leak-check=full --track-origins=yes ./$(NAME) $(ARGS)
+
 $(NAME): $(HEADERS) $(OBJS) $(LIBASM)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBASM_LIB) -o $(NAME)
 	@echo -n "$(GREEN_COLOR)Compilation successfull$(RESET_COLOR)\n"
@@ -74,14 +78,14 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+	@make -C $(LIBASM_DIR) fclean --no-print-directory
 
 re: fclean
-	@make -C $(LIBASM_DIR) fclean --no-print-directory
 	@$(MAKE) --no-print-directory test
 
 -include $(DEPS)
 
-.PHONY: test libasm clean fclean re
+.PHONY: test vtest libasm clean fclean re
 
 %:
 	@:
