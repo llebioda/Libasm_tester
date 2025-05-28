@@ -3,6 +3,8 @@
 extern int ft_strcmp(const char *s1, const char *s2);
 extern size_t ft_strlen(const char *s);
 
+static t_bool all_success = TRUE;
+
 static t_bool strcmp_is_valid(const char *s1, const char *s2, const int res, const int ft_res)
 {
     if (res != ft_res)
@@ -28,7 +30,9 @@ static void strcmp_test(const char *s1, const char *s2)
         res = strcmp(s1, s2);
 
     int ft_res = ft_strcmp(s1, s2);
-    strcmp_is_valid(s1, s2, res, ft_res);
+
+    if (!strcmp_is_valid(s1, s2, res, ft_res))
+        all_success = FALSE;
 }
 
 static void strcmp_benchmark(const char *s1, const char *s2)
@@ -50,6 +54,7 @@ static void strcmp_benchmark(const char *s1, const char *s2)
 
         if (!strcmp_is_valid(s1, s2, res, ft_res))
         {
+            all_success = FALSE;
             printf(YELLOW "Benchmark cancelled" RESET "\n");
             return;
         }
@@ -58,8 +63,9 @@ static void strcmp_benchmark(const char *s1, const char *s2)
     calculate_efficiency("strcmp", time_lib, time_ft);
 }
 
-void strcmp_tester(void)
+t_bool strcmp_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** STRCMP *****" RESET "\n\n");
 
     /* TEST */
@@ -139,4 +145,6 @@ void strcmp_tester(void)
     strcmp_benchmark(A_1_000, A_1_000);
     strcmp_benchmark(A_1_000, B_1_000);
     strcmp_benchmark(A_10_000, A_10_000"A");
+
+    return all_success;
 }

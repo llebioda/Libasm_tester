@@ -1,12 +1,12 @@
-#ifdef disable_atoi_base
-void atoi_base_tester(void) {}
-#else
-
 #include "libasm_tester.h"
+
+#ifdef disable_atoi_base
+t_bool atoi_base_tester(void) { return TRUE; }
+#else
 
 extern int ft_atoi_base(char *str, char *base);
 
-t_bool no_error = TRUE;
+static t_bool all_success = TRUE;
 
 static void atoi_base_test(char *str, char *base, int expected)
 {
@@ -16,13 +16,13 @@ static void atoi_base_test(char *str, char *base, int expected)
     {
         printf(RED "[ATOI_BASE] '%s', '%s' > %d != %d" RESET "\n",
             str, base, result, expected);
-        no_error = FALSE;
+        all_success = FALSE;
     }
 }
 
-void atoi_base_tester(void)
+t_bool atoi_base_tester(void)
 {
-    no_error = TRUE;
+    all_success = TRUE;
     printf("\n" PURPLE " ***** ATOI BASE *****" RESET "\n\n");
 
     atoi_base_test(NULL, "0123456789", 0);
@@ -128,7 +128,7 @@ void atoi_base_tester(void)
         atoi_base_test(buffer, "0123456789", i);
         sprintf(buffer, "%d", -i);
         atoi_base_test(buffer, "0123456789", -i);
-        if (no_error == FALSE)
+        if (all_success == FALSE)
             break;
     }
 
@@ -160,8 +160,10 @@ void atoi_base_tester(void)
     atoi_base_test("!,:", ".,:;!", 107);
     atoi_base_test("@1..=}1", "@:d}=).1", 257311);
 
-    if (no_error)
+    if (all_success)
         printf(GREEN "[ATOI BASE] All test passed succesfully" RESET "\n");
+
+    return all_success;
 }
 
 #endif

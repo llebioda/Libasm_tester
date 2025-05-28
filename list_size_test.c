@@ -1,10 +1,12 @@
-#ifdef disable_list_size
-void list_size_tester(void) {}
-#else
-
 #include "libasm_tester.h"
 
+#ifdef disable_list_size
+t_bool list_size_tester(void) { return TRUE; }
+#else
+
 extern int ft_list_size(t_list *begin_list);
+
+static t_bool all_success = TRUE;
 
 static t_list *create_node()
 {
@@ -16,12 +18,16 @@ static void list_size_test(t_list *list, int expected)
     int size = ft_list_size(list);
     t_bool is_valid = size == expected;
 
+    if (!is_valid)
+        all_success = FALSE;
+
     printf("%s[LIST SIZE] ft_list_size: %3d %c= %-3d" RESET "\n",
         is_valid ? GREEN : RED, size, is_valid ? '=' : '!', expected);
 }
 
-void list_size_tester(void)
+t_bool list_size_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** LIST SIZE *****" RESET "\n\n");
 
     // Test 1: Empty list
@@ -73,6 +79,8 @@ void list_size_tester(void)
         list_size_test(list, i);
         free_list(&list);
     }
+
+    return all_success;
 }
 
 #endif

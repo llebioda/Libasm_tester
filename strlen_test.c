@@ -2,6 +2,8 @@
 
 extern size_t ft_strlen(const char *s);
 
+static t_bool all_success = TRUE;
+
 static t_bool strlen_is_valid(const char *s, const int res, const int ft_res)
 {
     if (res != ft_res)
@@ -19,7 +21,8 @@ static void strlen_test(const char *s)
     int res = s == NULL ? 0 : strlen(s);
     int ft_res = ft_strlen(s);
 
-    strlen_is_valid(s, res, ft_res);
+    if (!strlen_is_valid(s, res, ft_res))
+        all_success = FALSE;
 }
 
 static void strlen_benchmark(const char *s)
@@ -41,6 +44,7 @@ static void strlen_benchmark(const char *s)
 
         if (!strlen_is_valid(s, res, ft_res))
         {
+            all_success = FALSE;
             printf(YELLOW "Benchmark cancelled" RESET "\n");
             return;
         }
@@ -49,8 +53,9 @@ static void strlen_benchmark(const char *s)
     calculate_efficiency("strlen", time_lib, time_ft);
 }
 
-void strlen_tester(void)
+t_bool strlen_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** STRLEN *****" RESET "\n\n");
 
     /* TEST */
@@ -143,4 +148,6 @@ void strlen_tester(void)
     strlen_benchmark("Hello");
     strlen_benchmark("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
     strlen_benchmark(A_10_000);
+
+    return all_success;
 }

@@ -2,6 +2,8 @@
 
 extern ssize_t ft_write(int fd, const void *buf, size_t count);
 
+static t_bool all_success = TRUE;
+
 static char *get_writable_buf(const void *buf, size_t count)
 {
     if (buf == NULL)
@@ -133,8 +135,9 @@ static void write_test(int fd, const void *buf, size_t count, const int errno_va
     ssize_t ft_res = ft_write(fd, buf, count);
     int ft_res_errno = errno;
 
-    write_is_valid(fd, buf, count, res, ft_res,
-        res_errno, ft_res_errno, errno_value);
+    if (!write_is_valid(fd, buf, count, res, ft_res,
+        res_errno, ft_res_errno, errno_value))
+        all_success = FALSE;
 }
 
 static void write_benchmark(int fd, const void *buf, size_t count, const int errno_value)
@@ -159,6 +162,7 @@ static void write_benchmark(int fd, const void *buf, size_t count, const int err
         if (!write_is_valid(fd, buf, count, res, ft_res,
                 res_errno, ft_res_errno, errno_value))
         {
+            all_success = FALSE;
             printf(YELLOW "Benchmark cancelled" RESET "\n");
             return;
         }
@@ -167,8 +171,9 @@ static void write_benchmark(int fd, const void *buf, size_t count, const int err
     calculate_efficiency("write", time_lib, time_ft);
 }
 
-void write_tester(void)
+t_bool write_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** WRITE *****" RESET "\n\n");
 
     /* TEST */
@@ -181,7 +186,7 @@ void write_tester(void)
     if (fd3 < 0 || fd4 < 0 || fd5 < 0 || fd6 < 0 || fd7 < 0) 
     {
         printf(RED "[WRITE] ERROR Failed to open test files!" RESET "\n");
-        return;
+        return FALSE;
     }
 
     write_test(fd3, "Short test", 10, 0);
@@ -236,7 +241,7 @@ void write_tester(void)
     if (fd3 < 0 || fd4 < 0 || fd5 < 0)
     {
         printf(RED "[WRITE] ERROR Failed to open benchmark files!" RESET "\n");
-        return;
+        return FALSE;
     }
 
     write_benchmark(fd3, "", 0, 0);
@@ -247,4 +252,6 @@ void write_tester(void)
     close(fd3);
     close(fd4);
     close(fd5);
+
+    return all_success;
 }

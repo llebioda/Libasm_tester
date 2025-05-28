@@ -2,13 +2,13 @@
 
 extern char *ft_strdup(const char *s);
 
+static t_bool all_success = TRUE;
+
 static t_bool strdup_is_valid(const char *src, const char *res, const int res_errno)
 {
     // Both are NULL, nothing to do
     if (src == NULL && res == NULL)
-    {
         return TRUE;
-    }
 
     if (src != NULL && res == NULL)
     {
@@ -49,7 +49,8 @@ static void strdup_test(const char *s)
 {
     char *res = ft_strdup(s);
 
-    strdup_is_valid(s, res, errno);
+    if (!strdup_is_valid(s, res, errno))
+        all_success = FALSE;
 
     free(res);
 }
@@ -74,6 +75,7 @@ static void strdup_benchmark(const char *s)
 
         if (!strdup_is_valid(s, ft_res, ft_res_errno))
         {
+            all_success = FALSE;
             printf(YELLOW "Benchmark cancelled" RESET "\n");
             free(res);
             free(ft_res);
@@ -86,8 +88,9 @@ static void strdup_benchmark(const char *s)
     calculate_efficiency("strdup", time_lib, time_ft);
 }
 
-void strdup_tester(void)
+t_bool strdup_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** STRDUP *****" RESET "\n\n");
 
     /* TEST */
@@ -167,4 +170,6 @@ void strdup_tester(void)
     strdup_benchmark("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
     strdup_benchmark("ñandú");
     strdup_benchmark(A_10_000);
+
+    return all_success;
 }

@@ -2,6 +2,8 @@
 
 extern ssize_t ft_read(int fd, void *buf, size_t count);
 
+static t_bool all_success = TRUE;
+
 static t_bool read_is_valid(const int fd, const char *expected, const size_t count,
     void *std_buffer, void *ft_buffer,
     const ssize_t res, const ssize_t ft_res,
@@ -66,6 +68,7 @@ static void read_test(int fd, const char *expected, size_t count, const int errn
 
     if (!std_buffer || !ft_buffer)
     {
+        all_success = FALSE;
         free(std_buffer);
         free(ft_buffer);
         printf(RED "[READ] MALLOC ERROR on fd=%d with expected=[%s] and count=%zu" RESET "\n",
@@ -78,8 +81,10 @@ static void read_test(int fd, const char *expected, size_t count, const int errn
     ssize_t ft_res = ft_read(fd, ft_buffer, count);
     int ft_res_errno = errno;
 
-    read_is_valid(fd, expected, count, std_buffer, ft_buffer,
-                    res, ft_res, res_errno, ft_res_errno, errno_value);
+    if (!read_is_valid(fd, expected, count, std_buffer, ft_buffer,
+                    res, ft_res, res_errno, ft_res_errno, errno_value))
+        all_success = FALSE;
+
     free(std_buffer);
     free(ft_buffer);
 }
@@ -98,6 +103,7 @@ static void read_benchmark(int fd, const char *expected, size_t count, const int
 
     if (!std_buffer || !ft_buffer)
     {
+        all_success = FALSE;
         free(std_buffer);
         free(ft_buffer);
         printf(RED "[READ] MALLOC ERROR on fd=%d with expected=[%s] and count=%zu" RESET "\n",
@@ -126,6 +132,7 @@ static void read_benchmark(int fd, const char *expected, size_t count, const int
         if (!read_is_valid(fd, expected, count, std_buffer, ft_buffer,
                             res, ft_res, res_errno, ft_res_errno, errno_value))
         {
+            all_success = FALSE;
             printf(YELLOW "Benchmark cancelled" RESET "\n");
             free(std_buffer);
             free(ft_buffer);
@@ -164,8 +171,9 @@ static t_bool write_x2_benchmark(int fd, const void *buf, size_t count)
     return TRUE;
 }
 
-void read_tester(void)
+t_bool read_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** READ *****" RESET "\n\n");
 
     /* TEST */
@@ -179,7 +187,7 @@ void read_tester(void)
     if (fd3 < 0 || fd4 < 0 || fd5 < 0 || fd6 < 0 || fd7 < 0) 
     {
         printf(RED "[READ] ERROR Failed to open test files to write!" RESET "\n");
-        return;
+        return FALSE;
     }
 
     write_x2(fd3, "Short test", 10);
@@ -222,7 +230,7 @@ void read_tester(void)
     if (fd3 < 0 || fd4 < 0 || fd5 < 0 || fd6 < 0 || fd7 < 0) 
     {
         printf(RED "[READ] ERROR Failed to open test files!" RESET "\n");
-        return;
+        return FALSE;
     }
 
     read_test(fd3, "Short test", 10, 0);
@@ -278,7 +286,7 @@ void read_tester(void)
     if (fd3 < 0 || fd4 < 0 || fd5 < 0) 
     {
         printf(RED "[READ] ERROR Failed to open benchmark files to write!" RESET "\n");
-        return;
+        return FALSE;
     }
 
     write_x2_benchmark(fd3, "", 0);
@@ -298,11 +306,13 @@ void read_tester(void)
     if (fd3 < 0 || fd4 < 0 || fd5 < 0) 
     {
         printf(RED "[READ] ERROR Failed to open benchmark files!" RESET "\n");
-        return;
+        return FALSE;
     }
 
     read_benchmark(fd3, "", 0, 0);
     read_benchmark(fd3, "", 1, 0);
     read_benchmark(fd4, "Hello World!", 12, 0);
     read_benchmark(fd5, A_1_000".\n", 1002, 0);
+
+    return all_success;
 }

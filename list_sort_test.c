@@ -1,10 +1,12 @@
-#ifdef disable_list_sort
-void list_sort_tester(void) {}
-#else
-
 #include "libasm_tester.h"
 
+#ifdef disable_list_sort
+t_bool list_sort_tester(void) { return TRUE; }
+#else
+
 extern void ft_list_sort(t_list **begin_list, int (*cmp)());
+
+static t_bool all_success = TRUE;
 
 static void TESTER_ft_list_sort(t_list **begin_list, int (*cmp)())
 {
@@ -42,7 +44,11 @@ static t_list *create_list(const void **values, int count)
     {
         t_list *new_node = malloc(sizeof(t_list));
         if (new_node == NULL)
+        {
+            printf(RED "[LIST_SORT] MALLOC ERROR while creating list" RESET "\n");
+            free(head);
             return NULL;
+        }
         new_node->data = (void *)values[i];
         new_node->next = NULL;
 
@@ -133,6 +139,7 @@ static void list_sort_test(const void **input, int count, int (*cmp)(), t_data_f
         printf("\nResult :  ");
         print_list(list, data_format);
         printf(RESET "\n\n");
+        all_success = FALSE;
     }
     else
     {
@@ -143,8 +150,9 @@ static void list_sort_test(const void **input, int count, int (*cmp)(), t_data_f
     free_list(&sorted_list);
 }
 
-void list_sort_tester(void)
+t_bool list_sort_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** LIST SORT *****" RESET "\n\n");
 
     // Test 0: Empty list
@@ -238,6 +246,8 @@ void list_sort_tester(void)
     for (int i = 0; i < test11_nodes_count; i++)
         free(test11_input[i]);
     free(test11_input);
+
+    return all_success;
 }
 
 #endif

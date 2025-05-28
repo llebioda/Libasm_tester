@@ -3,6 +3,8 @@
 extern char *ft_strcpy(char *dest, const char *src);
 extern size_t ft_strlen(const char *s);
 
+static t_bool all_success = TRUE;
+
 static t_bool strcpy_is_valid(const char *src, size_t buf_size,
     const char *buf2, const char *res, const char *ft_res)
 {
@@ -35,6 +37,7 @@ static void strcpy_test(const char *src, const size_t buf_size)
         buf2 = malloc(buf_size);
         if (!buf1 || !buf2)
         {
+            all_success = FALSE;
             free(buf1);
             free(buf2);
             printf(RED "[STRCPY] MALLOC ERROR on [%s] with buf_size=%zu" RESET "\n",
@@ -46,7 +49,8 @@ static void strcpy_test(const char *src, const size_t buf_size)
         ft_res = ft_strcpy(buf2, src);
     }
 
-    strcpy_is_valid(src, buf_size, buf2, res, ft_res);
+    if (!strcpy_is_valid(src, buf_size, buf2, res, ft_res))
+        all_success = FALSE;
 
     free(buf1);
     free(buf2);
@@ -59,6 +63,7 @@ static void strcpy_benchmark(const char *src, const size_t buf_size)
 
     if (!buf1 || !buf2)
     {
+        all_success = FALSE;
         free(buf1);
         free(buf2);
         printf(RED "[STRCPY] MALLOC ERROR on [%s] with buf_size=%zu" RESET "\n",
@@ -84,6 +89,7 @@ static void strcpy_benchmark(const char *src, const size_t buf_size)
 
         if (!strcpy_is_valid(src, buf_size, buf2, res, ft_res))
         {
+            all_success = FALSE;
             printf(YELLOW "Benchmark cancelled" RESET "\n");
             free(buf1);
             free(buf2);
@@ -98,8 +104,9 @@ static void strcpy_benchmark(const char *src, const size_t buf_size)
     calculate_efficiency("strcpy", time_lib, time_ft);
 }
 
-void strcpy_tester(void)
+t_bool strcpy_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** STRCPY *****" RESET "\n\n");
 
     /* TEST */
@@ -179,4 +186,6 @@ void strcpy_tester(void)
     strcpy_benchmark("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 53);
     strcpy_benchmark("ñandú", 8);
     strcpy_benchmark(A_10_000, 10001);
+
+    return all_success;
 }

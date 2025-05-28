@@ -1,10 +1,12 @@
-#ifdef disable_list_push_front
-void list_push_front_tester(void) {}
-#else
-
 #include "libasm_tester.h"
 
+#ifdef disable_list_push_front
+t_bool list_push_front_tester(void) { return TRUE; }
+#else
+
 extern void ft_list_push_front(t_list **begin_list, void *data);
+
+static t_bool all_success = TRUE;
 
 static t_bool verify_list_content(t_list *list, const char **expected, int count)
 {
@@ -55,6 +57,7 @@ static void list_push_front_test(const char **expected, int count)
         printf(RED "Result :  ");
         print_list(list, STRING);
         printf(RESET "\n\n");
+        all_success = FALSE;
     }
     else
     {
@@ -64,8 +67,9 @@ static void list_push_front_test(const char **expected, int count)
     free_list(&list);
 }
 
-void list_push_front_tester(void)
+t_bool list_push_front_tester(void)
 {
+    all_success = TRUE;
     printf("\n" PURPLE " ***** LIST PUSH FRONT *****" RESET "\n\n");
 
     // Test 0: Single element list
@@ -107,6 +111,8 @@ void list_push_front_tester(void)
 
     list_push_front_test(expected_values, test6_nodes_count);
     free(expected_values);
+
+    return all_success;
 }
 
 #endif
